@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 //import GLTFLoader from 'three-gltf-loader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+
 import { createCanvas } from 'canvas';
 import { createRef } from 'react';
 
@@ -28,7 +29,8 @@ export default function About() {
     let derekAvatar = new THREE.Mesh();
     let camera = new THREE.PerspectiveCamera();
     const loader = new GLTFLoader();
-    let centerpoint = new THREE.Vector3();
+    const derekParent = new THREE.Object3D();
+    derekParent.position.set(-60, 0, 0);
     console.time("loaded in");
 
     // Importing entire scene from c4d export
@@ -58,12 +60,10 @@ export default function About() {
         const clothesMap = pmremGenerator.fromEquirectangular( texture ).texture;
 
         // Set the texture as the environment map for a material
-        derekAvatar.traverse((child) => {
-          if (child.isMesh) {
-            child.material.envMap = clothesMap
-          }
-        });
-        pmremGenerator.dispose();    
+        var derek = derekAvatar.getObjectByName("Derek-Lambert-2SG")
+        derek.material.envMap = clothesMap;
+        pmremGenerator.dispose();
+      
       });
 
       hdrLoader.load('./Textures/tex/matt_tex.png', function (texture) {
@@ -71,22 +71,34 @@ export default function About() {
         const mattMap = pmremGenerator.fromEquirectangular( texture ).texture;
 
         // Set the texture as the environment map for a material
-        mattAvatar.traverse((child) => {
-          if (child.isMesh) {
-            child.material.envMap = mattMap
-          }
-        });
+        var matt = mattAvatar.getObjectByName("Matt-Lambert-2SG")
+        matt.material.envMap = mattMap;
         pmremGenerator.dispose();
       
       });
+      /*
+      mattAvatar.traverse((child) => {
+        if (child.isMesh) {
+          child.material.envMap = prefilteredCubeMap;
+        }
+      });
+      derekAvatar.traverse((child) => {
+        if (child.isMesh) {
+          child.material.envMap = prefilteredCubeMap;
+        }
+      });*/
 
+      //Bright sky
       const sphere = root.getObjectByName("Sphere");
       sphere.material.emissive = new THREE.Color(0xffffff); // set the emissive color to white
       sphere.material.emissiveIntensity = .5; // increase the emissive intensity to make it brighter
 
       console.log(dumpObject(root).join('\n'));
-      centerpoint = new THREE.Vector3((mattAvatar.position.x + derekAvatar.position.x)/2, (mattAvatar.position.y + derekAvatar.position.y)/2, (mattAvatar.position.z - derekAvatar.position.z)/2);
-      console.log(centerpoint);
+      //centerpoint = new THREE.Vector3((mattAvatar.position.x + derekAvatar.position.x)/2, (mattAvatar.position.y + derekAvatar.position.y)/2, (mattAvatar.position.z - derekAvatar.position.z)/2);
+      derekParent.add(derekAvatar);
+      derekAvatar.position.set(0,0,0);
+      scene.add(derekParent);
+      //console.log(centerpoint);
       console.timeLog("loaded in");
       //console.log(camera.position);
     });
@@ -119,6 +131,7 @@ export default function About() {
 
     var previousAngle = 0;
     var framecount = 0;
+    var rotate_avatar = 0;
     renderer.setAnimationLoop(animate);
 
     function animate() {
@@ -126,7 +139,6 @@ export default function About() {
       controls.update();
       
       var currentAngle = Math.atan2(camera.position.x, camera.position.z);
-      var rotate_avatar = 0;
 
       // Check if we crossed a 1/3 of a revolution boundary
       if (previousAngle !== null && currentAngle !== null) {
@@ -147,10 +159,11 @@ export default function About() {
       
       if(rotate_avatar !== 0){
         framecount += 1;
-        mattAvatar.rotation.y += rotate_avatar * Math.PI/30;
-        derekAvatar.rotation.y += rotate_avatar * Math.PI/30;
+        mattAvatar.rotation.y += rotate_avatar * Math.PI/25;
+        derekAvatar.rotation.y += rotate_avatar * Math.PI/25;
       }
-      if(framecount >= 30){
+
+      if(Math.abs(framecount) >= 25){
         rotate_avatar = 0;
         framecount = 0;
       }
@@ -161,15 +174,11 @@ export default function About() {
 
     }
 
-    //return () => {
-      //canvasRef.current.removeEventListener("wheel", handleScroll);
-    //};
-    
   }, []); // The empty array ensures that this effect only runs once when the component mounts
 
   return (
-    <div>
-      <canvas ref={canvasRef} width="600" height="600" />
+    <div id = "main">
+      <canvas ref={canvasRef} className = "three" style={{maxHeight:"100%", maxWidth:"100%"}} width="1920px" height="1080px" />
     </div>
   );
 }

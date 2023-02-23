@@ -96,7 +96,7 @@ export default function Home() {
 
   return (
     <div id = "main">
-      <canvas ref={canvasRef} className = "three" style={{maxHeight:"100%", maxWidth:"100%"}} width="1000px" height="1000px" />
+      <canvas ref={canvasRef} className = "three" style={{maxHeight:"100%", maxWidth:"100%"}} width="1920px" height="1080px" />
     </div>
   );
 }
