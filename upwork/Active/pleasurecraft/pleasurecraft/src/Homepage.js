@@ -27,7 +27,7 @@ export default function Home() {
     var coinDisc = new THREE.Mesh();
     const loader = new GLTFLoader();
 
-    loader.load('./glTF/Logo Chrome.gltf', (gltf) => {
+    loader.load('./glTF/Logo_v2.glb', (gltf) => {
       const root = gltf.scene;
       //scene.add(root);
       coinDisc = root.getObjectByName('Icon_Logo');
@@ -47,6 +47,8 @@ export default function Home() {
         console.log(texture.status);
       
       });    
+      coinDisc.material.emissive = new THREE.Color(0xffffff);
+      coinDisc.material.emissiveIntensity = .1;
       scene.add(coinDisc);
 
       //console.log(dumpObject(root).join('\n'));
@@ -54,6 +56,9 @@ export default function Home() {
 
     // Set up the Three.js scene, camera, and renderer
     const scene = new THREE.Scene();
+
+    //const light = new THREE.HemisphereLight(0xffffff, 1);
+    //scene.add(light);
 
     var theta = 0;
 
@@ -79,9 +84,6 @@ export default function Home() {
       camera.position.z = coordinates[1]
       console.log("("+camera.position.x+","+camera.position.z+")")
     
-      // Rotating camera to track origin
-      camera.lookAt(new THREE.Vector3(0, 0, 0));
-
       // Rotating camera to track origin
       camera.lookAt(new THREE.Vector3(0, 0, 0));
 

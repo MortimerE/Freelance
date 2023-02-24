@@ -29,15 +29,15 @@ export default function About() {
     let derekAvatar = new THREE.Mesh();
     let camera = new THREE.PerspectiveCamera();
     const loader = new GLTFLoader();
-    const derekParent = new THREE.Object3D();
-    derekParent.position.set(-60, 0, 0);
+    //const derekParent = new THREE.Object3D();
+    //derekParent.position.set(-60, 0, 0);
     console.time("loaded in");
 
     // Importing entire scene from c4d export
-    loader.load('./glTF/About Us_v2.glb', (gltf) => {
+    loader.load('./glTF/About Us_v3_with Sky.glb', (gltf) => {
       const root = gltf.scene;
       scene.add(root);
-      var waterFloor = root.getObjectByName('Water_Floor');
+      //var waterFloor = root.getObjectByName('Water_Floor');
       mattAvatar = root.getObjectByName('Matt');
       derekAvatar = root.getObjectByName('Derek');
       // HDRI setup
@@ -48,13 +48,16 @@ export default function About() {
         const prefilteredCubeMap = pmremGenerator.fromEquirectangular( texture ).texture;
 
         // Set the texture as the environment map for a material
-        var water = waterFloor.getObjectByName("Polygon")
-        water.material.envMap = prefilteredCubeMap;
+        //var water = waterFloor.getObjectByName("Polygon");
+        var sphere = root.getObjectByName("Sphere");
+;        //water.material.envMap = prefilteredCubeMap;
+        sphere.material.envMap = prefilteredCubeMap;
+        sphere.scale.set(.1, .1, .1);
         pmremGenerator.dispose();
         //console.log(texture.status);
       
       });
-
+      /*
       hdrLoader.load('./Textures/tex/derek_tex.png', function (texture) {
 
         const clothesMap = pmremGenerator.fromEquirectangular( texture ).texture;
@@ -75,7 +78,7 @@ export default function About() {
         matt.material.envMap = mattMap;
         pmremGenerator.dispose();
       
-      });
+      });*/
       /*
       mattAvatar.traverse((child) => {
         if (child.isMesh) {
@@ -89,15 +92,15 @@ export default function About() {
       });*/
 
       //Bright sky
-      const sphere = root.getObjectByName("Sphere");
-      sphere.material.emissive = new THREE.Color(0xffffff); // set the emissive color to white
-      sphere.material.emissiveIntensity = .5; // increase the emissive intensity to make it brighter
+      //var sphere = root.getObjectByName("Sphere");
+      //sphere.material.emissive = new THREE.Color(0xff0000); // set the emissive color to white
+      //sphere.material.emissiveIntensity = 1 // increase the emissive intensity to make it brighter
 
-      console.log(dumpObject(root).join('\n'));
+      //console.log(dumpObject(root).join('\n'));
       //centerpoint = new THREE.Vector3((mattAvatar.position.x + derekAvatar.position.x)/2, (mattAvatar.position.y + derekAvatar.position.y)/2, (mattAvatar.position.z - derekAvatar.position.z)/2);
-      derekParent.add(derekAvatar);
-      derekAvatar.position.set(0,0,0);
-      scene.add(derekParent);
+      //derekParent.add(derekAvatar);
+      //derekAvatar.position.set(0,0,0);
+      //scene.add(derekParent);
       //console.log(centerpoint);
       console.timeLog("loaded in");
       //console.log(camera.position);
@@ -111,8 +114,8 @@ export default function About() {
     scene.add(light);
     scene.add(sun);
 
-    camera = new THREE.PerspectiveCamera(75, canvasRef.current.width / canvasRef.current.height, 0.1, 4000);
-    camera.position.set(-30, 75, 0);
+    camera = new THREE.PerspectiveCamera(75, canvasRef.current.width / canvasRef.current.height, 0.1, 5000);
+    camera.position.set(0, 75, 0);
     scene.add(camera);
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, antialias:true });
@@ -122,7 +125,7 @@ export default function About() {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.autoRotate = true;
     controls.autoRotateSpeed = 2.0;
-    controls.target.set(-30, 75, 0);
+    controls.target.set( 0, 75, 0);
     controls.enablePan = false;
     controls.minPolarAngle = Math.PI/2.4; // lock vertical rotation
     controls.maxPolarAngle = Math.PI/2.4; // lock vertical rotation
@@ -144,18 +147,18 @@ export default function About() {
       if (previousAngle !== null && currentAngle !== null) {
           const diff = currentAngle - previousAngle;
           if (Math.abs(diff) >= (2 * Math.PI / 3)) {
-          if (diff > 0) {
-            rotate_avatar = -1;
-            console.log('Turning right');
-          } else {
-            rotate_avatar = 1;
-            console.log('Turning left');
-          }
+            if (diff > 0) {
+              rotate_avatar = -1;
+              console.log('Turning right');
+              previousAngle = currentAngle;
+            } else {
+              rotate_avatar = 1;
+              console.log('Turning left');
+              previousAngle = currentAngle;
+            }
         }
       }
-
-      // Store the current angle as the previous angle for the next update
-      previousAngle = currentAngle;
+      
       
       if(rotate_avatar !== 0){
         framecount += 1;
