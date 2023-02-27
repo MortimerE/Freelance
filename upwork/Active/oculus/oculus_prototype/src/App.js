@@ -5,45 +5,207 @@ import { Routes } from 'react-router-dom';
 function Header() {
   const [showMenu, setShowMenu] = useState(false);
 
-  const handleMenuClick = () => {
-    setShowMenu(!showMenu);
-  };
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  function handleMobileMenuClick() {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  }
 
   return (
     <nav>
       <div className="header-container">
-        <div className="logo">Your Logo</div>
+        <Link to="/" className="logo">
+          <img src="upwork/Active/oculus/oculus_prototype/public/Reverse Pink Oculus Logo AG new.png" alt="Oculus NZ" />
+        </Link>
         <ul className="menu-list">
-          <li className="menu-item">
+          <li className="menu-item dropdown">
             <Link to="/about">About</Link>
+            <ul className="dropdown-menu">
+              <li>
+                <Link to="/about/about-us">About Us</Link>
+              </li>
+              <li>
+                <Link to="/about/our-team">Our Team</Link>
+              </li>
+              <li>
+                <Link to="/about/our-method">Our Method</Link>
+              </li>
+              <li>
+                <Link to="/about/portfolio">Portfolio</Link>
+              </li>
+              <li>
+                <Link to="/about/testimonials">Testimonials</Link>
+              </li>
+              <li>
+                <Link to="/about/events">Events</Link>
+              </li>
+              <li>
+                <Link to="/about/career">Career</Link>
+              </li>
+              <li>
+                <Link to="/about/associations">Associations</Link>
+              </li>
+            </ul>
           </li>
           <li className="menu-item dropdown">
             <Link to="/services">Services</Link>
             <ul className="dropdown-menu">
               <li>
-                <Link to="/services/web-design">Web Design</Link>
+                <Link to="/services/building-enclosure">Building Enclosure</Link>
               </li>
               <li>
-                <Link to="/services/web-development">Web Development</Link>
+                <Link to="/services/design">Design</Link>
               </li>
               <li>
-                <Link to="/services/mobile-development">Mobile Development</Link>
+                <Link to="/services/construction">Construction</Link>
+              </li>
+              <li>
+                <Link to="/services/monitoring-ps4">Monitoring & PS4</Link>
+              </li>
+              <li>
+                <Link to="/services/passive-house">Passive House</Link>
+              </li>
+              <li>
+                <Link to="/services/component-design">Component Design</Link>
+              </li>
+              <li>
+                <Link to="/services/ps1">PS1</Link>
+              </li>
+              <li>
+                <Link to="/services/modeling">Modeling</Link>
+              </li>
+              <li>
+                <Link to="/services/testing">Testing</Link>
+              </li>
+              <li>
+                <Link to="/services/investigation-retrofit">Investigation & Retrofit</Link>
+              </li>
+              <li>
+                <Link to="/services/product-compliance-engineering">Product Compliance & Engineering</Link>
               </li>
             </ul>
           </li>
-          <li className="menu-item">
+          <li className="menu-item dropdown">
             <Link to="/portfolio">Portfolio</Link>
+            <ul className="dropdown-menu">
+              <li>
+                <Link to="/portfolio/banff-avenue">Banff Avenue</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/aroha-street">Aroha Street</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/galway-street">Galway Street</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/great-north-road-waterview">Great North Road Waterview</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/bader-ventura">Bader Ventura</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/neo-apartments">Neo Apartments</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/20-crescent-road">20 Crescent Road</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/kaplan-house">Kaplan House</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/4-viaduct-harbour">4 Viaduct Harbour</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/fortune-road">Fortune Road</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/woodford-grace">Woodford Grace</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/st-georges">St Georges</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/greys-avenue">Greys Avenue</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/hill-crescent">Hill Crescent</Link>
+              </li>
+              <li>
+                <Link to="/portfolio/great-north-road-avondale">Great North Road Avondale</Link>
+              </li>
+            </ul>
           </li>
-          <li className="menu-item">
+          <li className="menu-item dropdown">
             <Link to="/learn">Learn</Link>
+            <ul className="dropdown-menu">
+              <li>
+                <Link to="/learn/tools-resources">Tools & Resources</Link>
+              </li>
+              <li>
+                <Link to="/learn/nzbc-h1">NZBC H1</Link>
+              </li>
+              <li>
+                <Link to="/learn/changes">Changes</Link>
+              </li>
+              <li>
+                <Link to="/learn/podcasts">Podcasts</Link>
+              </li>
+              <li>
+                <Link to="/learn/bs-bs-seminars">BS+BS Seminars</Link>
+              </li>
+              <li>
+                <Link to="/learn/blog-bs">Blog + BS</Link>
+              </li>
+              <li>
+                <Link to="/learn/newsletter">Newsletter</Link>
+              </li>
+            </ul>
           </li>
-          <li className="menu-item">
+          <li className="menu-item dropdown">
             <Link to="/contact">Contact</Link>
+            <ul className="dropdown-menu">
+              <li>
+                <Link to="/contact/linkedin">LinkedIn</Link>
+              </li>
+            </ul>
           </li>
         </ul>
+        <div className="mobile-menu" onClick={handleMobileMenuClick}>
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        <div className={`mobile-menu-panel ${isMobileMenuOpen ? 'open' : ''}`}>
+          {/* ... */}
+        </div>
       </div>
     </nav>
+    
   );
+};
+
+function Footer() {
+  return (
+    <footer>
+      <div class="left">
+        <p>&copy; 2023 - @ Oculus Architectural Engineering Ltd</p>
+        <ul>
+          <li><a href="#">Privacy Statement</a></li>
+          <li><a href="#">Terms and Conditions</a></li>
+        </ul>
+      </div>
+      <div class="right">
+        <img src="upwork/Active/oculus/oculus_prototype/public/Reverse White Oculus Logo transparent bg.png" alt="Oculus NZ"/>
+        <ul>
+          <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+          <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+          <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+        </ul>
+      </div>
+    </footer>
+    );
 };
 
 function App() {
@@ -63,6 +225,9 @@ function App() {
           <Route path="/contact" element={<h1>Contact</h1>}>
           </Route>
         </Routes>
+      </div>
+      <div>
+        <Footer />
       </div>
     </Router>
   );
