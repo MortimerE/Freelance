@@ -8,10 +8,10 @@ function Header() {
 
     return (
       <div className = "header-container">
-        <Link to="/" className="logo">
-            <img src="Reverse Pink Oculus Logo AG new.png" alt="Oculus NZ" style={{width: "110px", height: "auto"}} />
-        </Link>
         <Router>
+          <Link to="/" className="logo">
+              <img src="Reverse Pink Oculus Logo AG new.png" alt="Oculus NZ" style={{width: "110px", height: "auto"}} />
+          </Link>
             <Navbar />
             <Routes>
             <Route path="/about" element={<h1>About</h1>}>
