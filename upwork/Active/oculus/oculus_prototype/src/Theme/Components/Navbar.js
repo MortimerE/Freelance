@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import useStyles from './styles';
+
   
 function Navbar() {
-
-  const [showMenu, setShowMenu] = useState(false);
 
   /* Nav Menu Components */
   const aboutDropdownItems = [

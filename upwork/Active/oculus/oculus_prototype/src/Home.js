@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Header from './Theme/Header';
-import Footer from './Theme/Footer';
+import { Footer } from './Theme/Footer';
 
 function Home() {
   return (

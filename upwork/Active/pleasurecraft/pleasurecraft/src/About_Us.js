@@ -42,7 +42,7 @@ export default function About() {
 		renderer.setSize( window.innerWidth, window.innerHeight );
 
     //Manual water 
-    const waterGeometry = new THREE.PlaneGeometry( 4000, 4000 );
+    const waterGeometry = new THREE.PlaneGeometry( 6000, 6000 );
     var water = new Water(
       waterGeometry,
       {
@@ -64,7 +64,7 @@ export default function About() {
 
     //Manual sky 
     // Create the sphere geometry
-    const sphereGeometry = new THREE.SphereGeometry(2000);
+    const sphereGeometry = new THREE.SphereGeometry(3000);
 
     // Create the sphere material with the environment map
     const sphereMaterial = new THREE.MeshStandardMaterial({
@@ -92,40 +92,63 @@ export default function About() {
     // Importing entire scene from c4d export
     loader.load('./glTF/About Us_v3_Avatars Only.glb', (gltf) => {
       const root = gltf.scene;
-      //scene.add(root);
+      scene.add(root);
       //var waterFloor = root.getObjectByName('Water_Floor');
       mattAvatar = root.getObjectByName('Matt');
       derekAvatar = root.getObjectByName('Derek');
-      scene.add(mattAvatar);
-      scene.add(derekAvatar);
+      mattAvatar.getObjectByName("Matt_1").material.reflectivity = 0.1;
+      mattAvatar.getObjectByName("Matt_1").material.ambientIntensity = 1;
+      mattAvatar.getObjectByName("Hand_M").material.ambientIntensity = 0;
+      //console.log(mattAvatar.rotation.y);
+      //derekAvatar.getObjectByName("Hand_D").excludeFromLight = true;
+      //scene.add(mattAvatar);
+      //scene.add(derekAvatar);
+      /*const exclusionList = ["Hand_M", "Hand_D", "Sunnies_D", "Sunnies_M"];
 
+      root.traverse((child) => {
+        if (child instanceof THREE.Mesh && !exclusionList.includes(child.name)) {
+          child.material.emissive = new THREE.Color(0xffe0ae);
+          child.material.emissiveIntensity = 0.1;
+        }
+      });*/
+   
       //Bright sky
       //var sphere = root.getObjectByName("Sphere");
       //sphere.material.emissive = new THREE.Color(0xff0000); // set the emissive color to white
       //sphere.material.emissiveIntensity = 1 // increase the emissive intensity to make it brighter
-      derekAvatar.position.y = 90;
-      mattAvatar.position.y = 80;
+      //derekAvatar.position.y = 88;
+      //mattAvatar.position.y = 77;
       console.log(dumpObject(root).join('\n'));
       //centerpoint = new THREE.Vector3((mattAvatar.position.x + derekAvatar.position.x)/2, (mattAvatar.position.y + derekAvatar.position.y)/2, (mattAvatar.position.z - derekAvatar.position.z)/2);
-      console.timeLog("loaded in");
+      //console.timeLog("loaded in");
       //console.log(camera.position);
-    });
+   });
 
     // Set up the Three.js scene, camera, and renderer
 
-    const light = new THREE.AmbientLight(0xffffff, .4);
+    const light = new THREE.AmbientLight(0xffffff, .9);
     // Hemisphere Lighting
-    const sun = new THREE.HemisphereLight(0xffffbb, 0x080820, .9 );
+    const lamp = new THREE.HemisphereLight(0xffffbb, 0x080820, .6);
+    //const sun = new THREE.PointLight(0xffb0b0, 1, 3000);
+    const sun = new THREE.PointLight(0xffaa10, 1, 3000);
+    sun.position.set(-500, 235, -7);
+    sun.visible = false;
+    sun.lookAt(0,0,0);
     scene.add(light);
+   //scene.add(lamp);
     //scene.add(sun);
     water.rotation.x = - Math.PI / 2;
     
     scene.add( sphere );
-    sphere.position.set(0, 0, 0);
+    sphere.position.set(0, 750, 0);
+    sphere.material.transparent = true;
+    //sphere.material.opacity = 0;
+    sphere.material.ambientIntensity = 0;
+    sphere.material.reflectivity = 0;
     scene.add( water );
 
-    camera = new THREE.PerspectiveCamera(75, canvasRef.current.width / canvasRef.current.height, 0.1, 3000);
-    camera.position.set(0, 75, 0);
+    camera = new THREE.PerspectiveCamera(75, canvasRef.current.width / canvasRef.current.height, 0.1, 4000);
+    //camera.position.set(0, 75, 0);
     scene.add(camera);
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -135,10 +158,10 @@ export default function About() {
     controls.enablePan = false;
     controls.rotateSpeed = .5; // reduce the maximum orbit speed
     controls.zoomSpeed = 0.5; // reduce the maximum zoom speed
-    controls.minPolarAngle = Math.PI/2.5; // lock vertical rotation
-    controls.maxPolarAngle = Math.PI/2.5; // lock vertical rotation
-    controls.minDistance = 280;
-    controls.maxDistance = 690;
+    controls.minPolarAngle = Math.PI/3.5; // lock vertical rotation
+    controls.maxPolarAngle = Math.PI/1.5; // lock vertical rotation
+    controls.minDistance = 250;
+    controls.maxDistance = 500;
 
     var framecount = 0;
     var rotateAvatar = 0;
@@ -147,31 +170,33 @@ export default function About() {
     function animate() {
       // Translating camera on a horizontal fixed orbit
       controls.update();
-      
-      // Calculate the angle between the camera and the avatars
-      const avatarAngle = Math.atan2(
-        camera.position.x - mattAvatar.position.x,
-        camera.position.z - mattAvatar.position.z
-      );
+      //sphere.rotation.z += Math.PI/4;
 
-      // Calculate the angle difference between the avatar's current direction and the angle to the camera
-      const diff = avatarAngle - mattAvatar.rotation.y;
-
-      // Check if the difference is more than 100 degrees
-      if (Math.abs(diff) >= (100 * Math.PI / 180)) {
-        // Determine the direction to rotate based on the sign of the angle difference
-        rotateAvatar = (diff > 0) ? 1 : -1;
+      if (rotateAvatar === 0){
+        // Calculate the angle between the camera and the avatars
+        var avatarAngle = Math.atan2(
+          camera.position.x - mattAvatar.position.x,
+          camera.position.z - mattAvatar.position.z
+        );
+        if (avatarAngle > Math.PI) {
+          avatarAngle -= 2 * Math.PI;
+        }
+    
+        // Check if the difference is more than 100 degrees
+        if (Math.abs(avatarAngle) >= (100 * Math.PI / 180)) {
+          // Determine the direction to rotate based on the sign of the angle difference
+          console.log(avatarAngle);
+          console.log(mattAvatar.rotation.y);
+          rotateAvatar = (avatarAngle > 0) ? 1 : -1;
+          console.log(rotateAvatar);
+        }
       }
       else {
-        rotateAvatar = 0;
-      }
-
-      if (rotateAvatar !== 0 ){
         // Rotate the avatars by a small amount
-        mattAvatar.rotation.y += rotateAvatar * Math.PI / 25;
-        derekAvatar.rotation.y += rotateAvatar * Math.PI / 25;
+        mattAvatar.rotation.y += rotateAvatar * Math.PI / 40;
+        derekAvatar.rotation.y += rotateAvatar * Math.PI / 40;
         framecount ++;
-        if (framecount > 12){
+        if (framecount >= 30){
           framecount = 0;
           rotateAvatar = 0;
         }
@@ -179,7 +204,6 @@ export default function About() {
       //console.log(rotate_avatar);
 
       //water
-      //const time = performance.now() * 0.001;
 			water.material.uniforms.time.value += 1.0 / 60.0;
 
       //console.log(camera.position);
